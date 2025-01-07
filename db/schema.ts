@@ -1,4 +1,6 @@
 import { boolean, integer, pgTable, serial, varchar } from "drizzle-orm/pg-core"
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
+import { z } from "zod"
 
 export const products = pgTable("products", {
   id: serial().primaryKey(),
@@ -8,5 +10,10 @@ export const products = pgTable("products", {
   isAvailable: boolean("is_available").default(true).notNull(),
 })
 
-export type TProduct = typeof products.$inferSelect
-export type InsertProduct = typeof products.$inferInsert
+//Schemas
+export const selectProductsSchema = createSelectSchema(products)
+export const insertProductsSchema = createInsertSchema(products)
+
+//Types
+export type SelectProduct = z.infer<typeof selectProductsSchema>
+export type InsertProduct = z.infer<typeof insertProductsSchema>

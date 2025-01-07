@@ -9,9 +9,9 @@ import { useProducts } from "@/lib/hooks/useProducts"
 
 export default function QueryByIdPage() {
   //* USEQUERY CUSTOM HOOK
-  const { data, isLoading, isError, error, isFetching } = useProducts()
+  const { data, isPending, isError, error, isFetching } = useProducts()
 
-  if (isLoading) return <div>Loading...</div>
+  if (isPending) return <div>Loading...</div>
 
   if (isError) return <div>Error: {error.message}</div>
 
@@ -24,7 +24,7 @@ export default function QueryByIdPage() {
         Query by <code className="bg-amber-400/20 px-1">id</code>
       </PageHeading>
       <ul className="grid grid-cols-2 gap-4">
-        {data?.map((product) => (
+        {data.map((product) => (
           <li key={product.id}>
             <Link href={`/query-by-id/${product.id}`}>
               <CardWrapper title={product.name}>

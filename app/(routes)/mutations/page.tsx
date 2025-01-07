@@ -7,14 +7,13 @@ import { useQueryClient } from "@tanstack/react-query"
 import PageHeading from "@/components/page-heading"
 
 import { postProduct } from "@/lib/data-access/products"
-import type { TProduct } from "@/db/schema"
 
 export default function MutationsPage() {
   //--------
   //* USESTATE
   const [name, setName] = useState("")
-  const [price, setPrice] = useState(199)
-  const [quantity, setQuantity] = useState(50)
+  const [price, setPrice] = useState<number>(199)
+  const [quantity, setQuantity] = useState<number>(50)
 
   //* USEQUERYCLIENT
   const queryClient = useQueryClient()
@@ -22,21 +21,22 @@ export default function MutationsPage() {
   //* USEMUTATION
   const { mutate, isPending } = useMutation({
     mutationFn: postProduct,
-    onSuccess: (newData) => {
+    onSuccess: () => {
       //? invalidate "employees" query and re-fetch it again
-      // queryClient.invalidateQueries({ queryKey: ["products"] })
+      queryClient.invalidateQueries({ queryKey: ["products"] })
       //? update the data in the cache,
       //? no GET request!!
-      queryClient.setQueryData(["products"], (oldData: TProduct[]) => {
-        return [...oldData, newData]
-      })
+      // queryClient.setQueryData(["products"], (oldData: SelectProduct[]) => {
+      //   return [...oldData, newData]
+      // })
     },
   })
 
   //* HANDLER FUNCTIONS
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    mutate()
+    mutate({ name, price, quantity })
+    console.log({ name, price, quantity })
     setName("")
     setPrice(199)
   }
@@ -56,19 +56,31 @@ export default function MutationsPage() {
             type="text"
             id="name"
             name="name"
-            // required
+            required
             className="rounded border border-gray-700 p-2"
           />
         </p>
         <p className="grid">
-          <label htmlFor="gender">Price</label>
+          <label htmlFor="price">Price</label>
           <input
             value={price}
             onChange={(e) => setPrice(+e.target.value)}
-            type="text"
-            id="gender"
-            name="gender"
-            // required
+            type="number"
+            id="price"
+            name="price"
+            required
+            className="rounded border border-gray-700 p-2"
+          />
+        </p>
+        <p className="grid">
+          <label htmlFor="quantity">Quantity</label>
+          <input
+            value={quantity}
+            onChange={(e) => setQuantity(+e.target.value)}
+            type="number"
+            id="quantity"
+            name="quantity"
+            required
             className="rounded border border-gray-700 p-2"
           />
         </p>

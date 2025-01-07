@@ -1,8 +1,10 @@
 import db from "@/db/drizzle"
-import { products } from "@/db/schema"
+import { insertProductsSchema, products } from "@/db/schema"
 import { eq } from "drizzle-orm"
 import { Hono } from "hono"
 import { HTTPException } from "hono/http-exception"
+import { z } from "zod"
+import { zValidator } from "@hono/zod-validator"
 
 const IS_LOGGED_IN = true
 
@@ -52,27 +54,20 @@ const app = new Hono()
   .get("/:id", async (c) => {
     const id = c.req.param("id")
 
+    if (!id) {
+      return c.json({ error: "Missing id" }, 400)
+    }
+
     //* DATABASE
     const data = await getProductByIdFromDB(id)
 
     return c.json({ data: data })
   })
-  .post("/", async (c) => {
+  .post("/", zValidator("json", insertProductsSchema), async (c) => {
     // add auth check
-    const data = await c.req.json()
-    const { name, price, quantity, isAvailable } = data
+    const data = c.req.valid("json")
 
-    const insertedProduct = (
-      await db
-        .insert(products)
-        .values({
-          name,
-          price: +price,
-          quantity: +quantity,
-          isAvailable,
-        })
-        .returning()
-    )[0]
+    const [insertedProduct] = await db.insert(products).values(data).returning()
     return c.json(insertedProduct, 201)
   })
 

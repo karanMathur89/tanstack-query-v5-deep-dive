@@ -13,11 +13,11 @@ export default function CompanyPage({
 }) {
   const { id } = use(params)
   //* USEQUERY CUSTOM HOOK
-  const { data, isLoading, isError, error } = useProduct(id)
+  const { data, isPending, isError, error } = useProduct(id)
 
   const product = data?.data
 
-  if (isLoading) return <div>Loading...</div>
+  if (isPending) return <div>Loading...</div>
 
   if (isError) return <div>Error: {error.message}</div>
 

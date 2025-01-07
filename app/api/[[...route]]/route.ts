@@ -4,7 +4,6 @@ import { HTTPException } from "hono/http-exception"
 // import { logger } from "hono/logger"
 //import routes
 import products from "./products"
-import posts from "./posts"
 
 export const runtime = "edge"
 
@@ -19,7 +18,7 @@ app.onError((err, c) => {
   return c.json({ error: "Internal error" }, 500)
 })
 
-const routes = app.route("/products", products).route("/posts", posts)
+const routes = app.route("/products", products)
 
 export const GET = handle(app)
 export const POST = handle(app)

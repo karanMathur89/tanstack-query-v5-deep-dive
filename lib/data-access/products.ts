@@ -36,8 +36,6 @@ export async function getProductsPagination(page: number) {
 }
 
 export async function postProduct(newProduct: InsertProduct) {
-  // delay of 2 seconds
-  await new Promise((resolve) => setTimeout(resolve, 2000))
   const res = await client.api.products.$post({ json: newProduct })
   if (!res.ok) {
     throw new Error("Failed to add the product.")
