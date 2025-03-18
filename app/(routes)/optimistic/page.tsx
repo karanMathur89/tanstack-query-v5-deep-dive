@@ -6,7 +6,7 @@ import { useQueryClient } from "@tanstack/react-query"
 
 import PageHeading from "@/components/page-heading"
 import { postProduct } from "@/lib/data-access/products"
-import type { InsertProduct, TProduct } from "@/db/schema"
+import type { InsertProduct, SelectProduct } from "@/db/schema"
 import ProductList from "./product-list"
 
 const LIST = ["Snowy", "Frosty", "Sunny", "Rainy", "Windy"]
@@ -33,8 +33,8 @@ export default function OptimisticPage() {
       const previousProducts = queryClient.getQueriesData({
         queryKey: ["products"],
       })
-      queryClient.setQueryData(["products"], (oldData: TProduct[]) => {
-        return [...oldData, { ...newProduct, id: 900 }]
+      queryClient.setQueryData(["products"], (oldData: SelectProduct[]) => {
+        return [...oldData, { ...newProduct, id: oldData.length + 1 }]
       })
 
       return { previousProducts }

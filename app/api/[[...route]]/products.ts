@@ -12,6 +12,7 @@ const IS_LOGGED_IN = true
 async function getProductsFromDB() {
   const data = await db.query.products.findMany({
     orderBy: products.id,
+    limit: 5,
   })
   return data
 }
