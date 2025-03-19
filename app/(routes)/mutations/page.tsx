@@ -20,7 +20,8 @@ export default function MutationsPage() {
   //* USEQUERYCLIENT
   const queryClient = useQueryClient()
 
-  const { data, isPending: isProductsPending } = useProducts()
+  const { isPending: isProductsPending } = useProducts()
+  const data = useProducts().data || []
 
   //* USEMUTATION
   const { mutate, isPending } = useMutation({
@@ -100,26 +101,25 @@ export default function MutationsPage() {
         </button>
       </form>
       {isProductsPending && <div>Loading...</div>}
-      {data && (
-        <ul className="mt-4 grid grid-cols-2 gap-4">
-          {isPending && (
-            <li className="animate-pulse">
-              <CardWrapper title={"Adding product"}>
-                <p>...</p>
-                <p>...</p>
-              </CardWrapper>
-            </li>
-          )}
-          {data.toReversed().map((product) => (
-            <li key={product.id}>
-              <CardWrapper title={product.name}>
-                <p>${product.price}</p>
-                <p>{product.quantity} units for sale</p>
-              </CardWrapper>
-            </li>
-          ))}
-        </ul>
-      )}
+
+      <ul className="mt-4 grid grid-cols-2 gap-4">
+        {isPending && (
+          <li className="animate-pulse">
+            <CardWrapper title={"Adding product"}>
+              <p>...</p>
+              <p>...</p>
+            </CardWrapper>
+          </li>
+        )}
+        {data.toReversed().map((product) => (
+          <li key={product.id}>
+            <CardWrapper title={product.name}>
+              <p>${product.price}</p>
+              <p>{product.quantity} units for sale</p>
+            </CardWrapper>
+          </li>
+        ))}
+      </ul>
     </section>
   )
 }
